@@ -1,0 +1,21 @@
+#
+# Copyright (c) 2019 Nordic Semiconductor ASA
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+description:
+    Texas Instruments Battery Charger BQ2561X
+
+compatible: "ti,bq2561x"
+
+include: [battery.yaml, i2c-device.yaml]
+
+properties:
+    int-gpios:
+      type: phandle-array
+      required: false
+
+    ce-gpios:
+      type: phandle-array
+      required: false

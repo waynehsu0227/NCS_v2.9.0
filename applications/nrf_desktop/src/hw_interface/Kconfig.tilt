@@ -1,0 +1,53 @@
+#
+# Copyright (c) 2019 Nordic Semiconductor
+#
+# SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
+#
+
+menu "Tilt configuration"
+
+choice
+	prompt "Select tilt interface"
+	default DESKTOP_TILT_NONE
+
+config DESKTOP_TILT_NONE
+	bool "Disable tilt"
+	help
+	  If selected, no tilt source if defined for the interface.
+
+config DESKTOP_TILT_BUTTONS_ENABLE
+	bool "tilt from buttons"
+	depends on CAF_BUTTON_EVENTS
+	help
+	  If selected, movement data it obtained from buttons.
+
+endchoice
+
+
+config DESKTOP_TILT_BUTTONS_LEFT_KEY_ID
+	int "Left key ID"
+	depends on DESKTOP_TILT_BUTTONS_ENABLE
+	default 0
+	help
+	  ID of key use for generating left tilt.
+
+config DESKTOP_TILT_BUTTONS_RIGHT_KEY_ID
+	int "Right key ID"
+	depends on DESKTOP_TILT_BUTTONS_ENABLE
+	default 0
+	help
+	  ID of key use for generating right tilt.
+
+config DESKTOP_TILT_BUTTONS_TILT_PER_SEC
+	int "tilt generated per second during a button press"
+	depends on DESKTOP_TILT_BUTTONS_ENABLE
+	range 1 100000
+	default 1000
+
+if !DESKTOP_TILT_NONE
+module = DESKTOP_TILT
+module-str = tilt module
+source "subsys/logging/Kconfig.template.log_config"
+endif
+
+endmenu

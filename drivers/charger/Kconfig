@@ -1,0 +1,17 @@
+#
+# Copyright (c) 2019 Nordic Semiconductor
+#
+# SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
+#
+
+menuconfig CHARGER
+	bool "Battery charger drivers"
+	help
+	  Enable battery charger driver configuration.
+
+if CHARGER
+
+rsource "bq2561x/Kconfig"
+rsource "bq24295/Kconfig"
+rsource "bt2306/Kconfig"
+endif # CHARGER

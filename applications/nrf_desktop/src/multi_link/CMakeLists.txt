@@ -1,0 +1,37 @@
+#
+# Copyright (c) 2021 Nordic Semiconductor ASA
+#
+# SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
+#
+#Henry add start
+cmake_minimum_required(VERSION 3.20)
+
+find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
+project(gzll_ack_payload_device)
+#Henry add end
+# NORDIC SDK APP START
+target_sources(app PRIVATE
+  ${CMAKE_CURRENT_SOURCE_DIR}/multi_link.c
+ # ${CMAKE_CURRENT_SOURCE_DIR}/multi_link_proto_common.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/multi_link_proto_device.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/multi_link_setting.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/multi_link_handler.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/multi_link_crypto.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/multi_link_load_key.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/multi_link_basic.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/multi_link_ota.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/multi_link_proto_psa_helper.c  
+  
+)
+######Wayne
+add_library(delldonglelib STATIC IMPORTED GLOBAL)
+set_target_properties(delldonglelib PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/lib/gen3p5devlib_v15build5_no.a)
+target_link_libraries(app PUBLIC delldonglelib)
+#target_link_libraries(app PRIVATE ${PROJECT_SOURCE_DIR}/src/multi_link/lib/gen3p5devlib_v15build5_no.a)
+
+target_sources_ifdef(CONFIG_BT app PRIVATE
+  ${CMAKE_CURRENT_SOURCE_DIR}/multi_link_ble_selector.c
+)
+# NORDIC SDK APP END
+
+zephyr_library_include_directories()

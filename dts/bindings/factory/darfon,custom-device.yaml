@@ -1,0 +1,9 @@
+include: base.yaml
+
+compatible: "darfon,custom-device"
+description: Custom devicetree device
+properties:
+  custom-gpios:
+    type: phandle-array
+    description: custom gpio pins
+    required: true

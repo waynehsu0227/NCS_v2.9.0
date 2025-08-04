@@ -1,0 +1,8 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = true
+[remote "origin"]
+	url = /home/wayne/ncs/v2.9.0/nrf/.
+	fetch = +refs/*:refs/*
+	mirror = true

@@ -1,0 +1,17 @@
+menuconfig LP5012
+	bool "LP5012 LED DRIVER"
+	depends on I2C
+	help
+	  Enable driver for LP5012 sensors.
+
+if LP5012
+
+config LED_DRIVER_MAX_LEDS
+	int "Maximum number LEDs"
+	default 12
+	range 1 12
+	help
+	  Maximum number of LED devices. The minimum (and
+	  default) number is 1.
+
+endif

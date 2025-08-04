@@ -1,0 +1,49 @@
+# PAW3232 optical motion sensor
+#
+# Copyright (c) 2019 Nordic Semiconductor
+#
+# SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
+#
+
+menuconfig PAW3232
+	bool "PAW3232 mouse optical sensor"
+	help
+	  Enable PAW3232 mouse optical sensor.
+
+if PAW3232
+
+choice
+	prompt "Select PAW3232 sensor orientation"
+	default PAW3232_ORIENTATION_0
+
+config PAW3232_ORIENTATION_0
+	bool "PAW3232 not rotated"
+
+config PAW3232_ORIENTATION_90
+	bool "PAW3232 rotated 90 deg clockwise"
+
+config PAW3232_ORIENTATION_180
+	bool "PAW3232 rotated 180 deg clockwise"
+
+config PAW3232_ORIENTATION_270
+	bool "PAW3232 rotated 270 deg clockwise"
+
+endchoice
+
+choice
+	prompt "Select PAW3232 sensor motion data length"
+	default PAW3232_8_BIT_MODE
+
+config PAW3232_8_BIT_MODE
+	bool "PAW3232 8-bit motion data length"
+
+config PAW3232_16_BIT_MODE
+	bool "PAW3232 16-bit motion data length"
+
+endchoice
+
+module = PAW3232
+module-str = PAW3232
+source "${ZEPHYR_BASE}/subsys/logging/Kconfig.template.log_config"
+
+endif #PAW3232

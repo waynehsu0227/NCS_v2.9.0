@@ -1,0 +1,21 @@
+#
+#  Copyright (c) 2019 Nordic Semiconductor ASA
+#
+#  SPDX-License-Identifier: Apache-2.0
+#
+
+menuconfig BQ2561X
+	bool "BQ2561X Charger"
+	depends on DT_HAS_TI_BQ2561X_ENABLED
+	select I2C
+	help
+	  Enable driver for BQ2561X Charger.
+
+if BQ2561X
+
+
+module = BQ2561X
+module-str = BQ2561X
+source "${ZEPHYR_BASE}/subsys/logging/Kconfig.template.log_config"
+
+endif #BQ2561X

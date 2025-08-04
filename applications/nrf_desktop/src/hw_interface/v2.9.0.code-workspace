@@ -1,0 +1,36 @@
+{
+	"folders": [
+		{
+			"path": "../../../../.."
+		}
+	],
+	"settings": {
+		"nrf-connect.applications": [
+			"c:\\NCS\\v2.9.0\\nrf\\applications\\nrf_desktop",
+			"c:\\NCS\\v2.9.0\\zephyr\\samples\\basic\\button",
+			"c:\\NCS\\v2.9.0\\zephyr\\samples\\basic\\blinky",
+			"c:\\NCS\\v2.9.0\\nrf\\samples\\cypto_20250410",
+			"c:\\NCS\\v2.9.0\\nrf\\samples\\peripheral\\radio_test"
+		],
+		"files.associations": {
+			"battery_event.h": "c",
+			"conn.h": "c",
+			"mac_os_key_id.h": "c",
+			"mac_os_keys_def.h": "c",
+			"key_id.h": "c",
+			"button_event.h": "c",
+			"fn_keys_def.h": "c",
+			"fn_key_id.h": "c",
+			"mac_os_key_event.h": "c",
+			"nrf_vpr_csr.h": "c",
+			"led_state.h": "c",
+			"charger.h": "c",
+			"gpio.h": "c",
+			"dk_buttons_and_leds.h": "c",
+			"soc.h": "c",
+			"soc_nrf_common.h": "c",
+			"radio_test.h": "c",
+			"hid_keymap.h": "c"
+		}
+	}
+}

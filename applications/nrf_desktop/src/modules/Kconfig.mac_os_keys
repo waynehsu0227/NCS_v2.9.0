@@ -1,0 +1,38 @@
+#
+# Copyright (c) 2019 Nordic Semiconductor
+#
+# SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
+#
+
+menu "Mac os keys"
+
+config DESKTOP_MAC_OS_KEYS_ENABLE
+	bool "Enable Mac os keys support"
+	help
+	  Button remapper adds fn bit to all key ids while mac os key function is tigger.
+
+if DESKTOP_MAC_OS_KEYS_ENABLE
+
+config WIN_MODE_SELECTOR_BUTTON
+    hex "Windows os mode opration button"
+	range 0x0000 0xffff
+	default 0xffff
+
+config MAC_MODE_SELECTOR_BUTTON
+    hex "Mac os mode opration button"
+	range 0x0000 0xffff
+	default 0xffff
+
+config DESKTOP_MAC_KEYS_MAX_ACTIVE
+	int "Max Fn key pressed"
+	default 4
+	help
+	  Maximum number of mac keys pressed at the same time.
+
+module = DESKTOP_MAC_OS_KEYS
+module-str = Mac os keys
+source "subsys/logging/Kconfig.template.log_config"
+
+endif
+
+endmenu

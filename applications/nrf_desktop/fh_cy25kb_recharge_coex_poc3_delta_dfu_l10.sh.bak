@@ -1,0 +1,8 @@
+#!/bin/bash
+BUILD_FOLDER=cy25kb_recharge_coex_delta_dfu_l10
+west flash  --recover -d build_${BUILD_FOLDER}
+#cp build_${BUILD_FOLDER}/merged.hex hex/full
+#cp build_${BUILD_FOLDER}/nrf_desktop/zephyr/zephyr.signed.hex hex
+
+#west ncs-provision upload -s nrf54l15 -k ./configuration/nrf54l15dk_nrf54l10_cpuapp/images/mcuboot/mcuboot_private.pem
+nrfutil device x-provision-keys --key-file ./configuration/nrf54l15dk_nrf54l10_cpuapp/images/mcuboot/keyfile.json

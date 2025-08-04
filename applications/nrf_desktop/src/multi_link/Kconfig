@@ -1,0 +1,154 @@
+# Copyright (c) 2020 IndiLogic LLC
+# SPDX-License-Identifier: Apache-2.0
+
+
+menu "Multi LINK configuration"
+
+config MULTILINK_ENABLE
+	bool "Enable multi link module"
+#	depends on DESKTOP_ROLE_HID_PERIPHERAL
+#	select GAZELL
+#	select GZLL
+	help
+	  Enables multi link module.
+if MULTILINK_ENABLE
+
+choice GAZELL_SWI
+	default GAZELL_SWI1 if BT
+	help
+	  Update used software interrupt to avoid BLE interoperability issues.
+endchoice
+
+choice GAZELL_TIMER
+	default GAZELL_TIMER2 if BT
+	help
+	  Update used timer to avoid BLE interoperability issues.
+endchoice
+
+config MULTILINK_BLE_SELECTOR_BUTTON
+    hex "Multi-link and BLE mode opration button"
+	range 0x0000 0xffff
+	default 0xffff
+
+config BT1_MODE_SELECTOR_BUTTON
+    hex "BLE 1 mode opration button"
+	range 0x0000 0xffff
+	default 0xffff
+
+config BT2_MODE_SELECTOR_BUTTON
+    hex "BLE 2 mode opration button"
+	range 0x0000 0xffff
+	default 0xffff
+
+config MULTILINK_MODE_SELECTOR_BUTTON
+    hex "Multi-link mode opration button"
+	range 0x0000 0xffff
+	default 0xffff
+
+config MULTI_LINK_PEER_CONTROL_BUTTON
+    hex "Multi-link peer operation button"
+	range 0x0000 0xffff
+	default 0xffff
+
+config DESKTOP_GZP_SUBSCRIBER_PRIORITY
+	int "Gazell HID reports subscriber priority"
+	default 1
+	range 1 255
+	help
+	  The lower value means the lower priority in subscribtion to HID
+	  reports. By default, Gazell uses the lowest possible priority.
+
+config DESKTOP_BLE_GZP_SELECTOR_ID
+	int "ID of HW selector used to control switching between Bluetooth LE and Gazell"
+	range 0 255
+	default 0
+
+config DESKTOP_BLE_GZP_SELECTOR_POS_BLE
+	int "Selector position for BLE"
+	range 0 255
+	default 0
+
+config DESKTOP_BLE_GZP_SELECTOR_POS_GZP
+	int "Selector position for Gazell"
+	range 0 255
+	default 0
+
+config DESKTOP_GZP_MODULE_SUSPEND_EVENTS
+	bool "Module suspend/resume request events support"
+	depends on CAF_MODULE_SUSPEND_EVENTS
+	default y
+
+config DESKTOP_GZP_SUSPEND_ON_READY
+	bool "Automatically suspend module right after initialization"
+	depends on DESKTOP_GZP_MODULE_SUSPEND_EVENTS
+	default y
+
+#config DELL_DONGLE_MULTI_LINK_PROTO_COMMON_LOG_LEVEL
+#	int "Multi link common log level"
+#	default 0
+
+#config DELL_DONGLE_MULTI_LINK_PROTO_DEVICE_LOG_LEVEL
+#	int "Multi link device log level"
+#	default CONFIG_DELL_DONGLE_MULTI_LINK_PROTO_COMMON_LOG_LEVEL
+
+config MULTI_LINK_PEER_EVENTS
+	bool "Enable multi link peer events"
+	default n
+	help
+	  Enable support for multi link peer events.
+
+
+config DELL_DEVICE_MULTI_LINK_PROTO_COMMON_LOG_LEVEL
+	int "Multi link common log level"
+	default 3
+
+config DELL_DEVICE_MULTI_LINK_PROTO_DEVICE_LOG_LEVEL
+	int "Multi link device log level"
+	default 0
+
+config CHICONY_DEBUG_ENABLE
+	bool 
+    default n
+    prompt "Chicony  DEBUG"
+
+config CHICONY_COMMON_DEBUG_MODE_ENABLE
+	bool 
+    default n
+    prompt "Chicony  Common DEBUG"
+
+config CHICONY_DEBUG_PSA_HELPER_ENABLE
+	bool 
+    default n
+    prompt "Chicony  DEBUG"
+	
+config ENABLE_INJECTTION_DATA
+	bool 
+    default n
+    prompt "G3p5 Injection Data  DEBUG"
+
+config ODM_COMMON_DEBUG_MODE_ENABLE
+	bool 
+    default n
+    prompt "Enable odm debug common.c"
+
+config MULTI_LINK_COMMON_LIB_ENABLE
+	bool 
+    default n
+    prompt "Enable odm debug common.c"
+
+config DESKTOP_MULTI_LINK_G35_SUPPORT
+    bool
+    default y
+    prompt "Enable MULTI Link G35"
+
+
+
+
+module = MULTI_LINK
+module-str = multi link
+source "subsys/logging/Kconfig.template.log_config"
+
+
+endif # MULTILINK_ENABLE
+endmenu
+ 

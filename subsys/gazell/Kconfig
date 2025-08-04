@@ -1,0 +1,282 @@
+#
+# Copyright (c) 2021 Nordic Semiconductor ASA
+#
+# SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
+#
+
+menuconfig GAZELL
+	bool "Gazell"
+	depends on GZLL && CLOCK_CONTROL_NRF
+	select NRFX_PPI if HAS_HW_NRF_PPI
+	select NRFX_DPPI if HAS_HW_NRF_DPPIC
+	help
+	  Enable Gazell functionality.
+
+if GAZELL
+
+config GAZELL_DYNAMIC_RADIO_INTERRUPT
+	bool "Use direct dynamic interrupt for Radio IRQ"
+	depends on DYNAMIC_DIRECT_INTERRUPTS
+	help
+	  This allows reassigning Radio IRQn when Gazell Link Layer is
+	  uninitialized.
+
+module = GAZELL
+module-str = Gazell
+source "subsys/logging/Kconfig.template.log_config"
+
+config GAZELL_PAIRING
+	bool "Gazell Pairing"
+	help
+	  Enable Gazell Pairing.
+
+config GAZELL_GPIO_DEBUG
+	bool "Gazell GPIO debug"
+	help
+	  Enable Gazell GPIO debug.
+
+config GAZELL_DEBUG_FLY_PIN
+	int "Gazell FLW debug pin"
+	default 3 if SOC_SERIES_NRF54LX
+	default 30 if SOC_SERIES_NRF52X
+	default 7  if SOC_SERIES_NRF53X
+	default 0
+	help
+	  The GPIO pin to use for Gazell debug flywheel.
+
+config GAZELL_LCORE_DEBUG_IRQ_PIN
+	int "Gazell LCORE debug IRQ pin"
+	default 2 if SOC_SERIES_NRF54LX
+	default 29 if SOC_SERIES_NRF52X
+	default 25 if SOC_SERIES_NRF53X
+	default 0
+	help
+	  The GPIO pin to use for Gazell debug LCORE IRQ.
+
+config GAZELL_LCORE_DEBUG_PIN_1
+	int "Gazell LCORE debug PIN 1"
+	default 4 if SOC_SERIES_NRF54LX
+	default 13 if SOC_SERIES_NRF52X
+	default 28 if SOC_SERIES_NRF53X
+	default 0
+	help
+	  The GPIO pin to use for Gazell debug LCORE PIN 1.
+
+config GAZELL_LCORE_DEBUG_PIN_2
+	int "Gazell LCORE debug PIN 2"
+	default 40 if SOC_SERIES_NRF54LX
+	default 14 if SOC_SERIES_NRF52X
+	default 29 if SOC_SERIES_NRF53X
+	default 0
+	help
+	  The GPIO pin to use for Gazell debug LCORE PIN 2.
+
+config GAZELL_LCORE_DEBUG_PIN_3
+	int "Gazell LCORE debug PIN 3"
+	default 45 if SOC_SERIES_NRF54LX
+	default 15 if SOC_SERIES_NRF52X
+	default 30 if SOC_SERIES_NRF53X
+	default 0
+	help
+	  The GPIO pin to use for Gazell debug LCORE PIN 3.
+
+config GAZELL_LCORE_DEBUG_PIN_4
+	int "Gazell LCORE debug PIN 4"
+	default 46 if SOC_SERIES_NRF54LX
+	default 16 if SOC_SERIES_NRF52X
+	default 31 if SOC_SERIES_NRF53X
+	default 0
+	help
+	  The GPIO pin to use for Gazell debug LCORE PIN 4.
+
+config GAZELL_DEBUG_PIN
+	int "Gazell general debug PIN"
+	default 46 if SOC_SERIES_NRF54LX
+	default 31 if SOC_SERIES_NRF52X
+	default 31 if SOC_SERIES_NRF53X
+	default 0
+	help
+	  The GPIO pin to use for Gazell general debug PIN.
+
+if GAZELL_PAIRING
+
+choice GAZELL_PAIRING_ROLE
+	prompt "Gazell Pairing role"
+
+config GAZELL_PAIRING_DEVICE
+	bool "Device"
+
+config GAZELL_PAIRING_HOST
+	bool "Host"
+	depends on ENTROPY_GENERATOR
+
+endchoice # GAZELL_PAIRING_ROLE
+
+config GAZELL_PAIRING_USER_CONFIG_ENABLE
+	bool "Use application-specific Gazell Pairing configuration file"
+
+if GAZELL_PAIRING_USER_CONFIG_ENABLE
+config GAZELL_PAIRING_USER_CONFIG_FILE
+	string "Gazell Pairing configuration file name"
+	default "gzp_user_config.h"
+	help
+	  Modify the file name to use an application-specific Gazell Pairing configuration file.
+
+endif # GAZELL_PAIRING_USER_CONFIG_ENABLE
+
+if GAZELL_PAIRING_DEVICE
+
+config GAZELL_PAIRING_DEVICE_MSGQ_LEN
+	int "Gazell Pairing Device message queue length"
+	range 1 20
+	help
+	  Specify the length of message queue in the device pairing module.
+	  The module stores various events in the message queue. e.g. The
+	  Gazell Link Layer callbacks are stored as events. The default of 1
+	  works well for pairing and encypting data. Some applications
+	  such as a computer mouse may send multiple packets at a time and
+	  they will need a longer message queue.
+
+endif # GAZELL_PAIRING_DEVICE
+
+config GAZELL_PAIRING_CRYPT
+	bool "Gazell Pairing encryption"
+	imply ENTROPY_GENERATOR
+	imply CRYPTO_NRF_ECB
+	help
+	  Enable Gazell Pairing encryption.
+
+config GAZELL_PAIRING_SETTINGS
+	bool "Gazell Pairing settings persistent storage"
+	depends on SETTINGS
+	help
+	  Enable Gazell Pairing settings persistent storage.
+
+endif # GAZELL_PAIRING
+
+config GAZELL_ZERO_LATENCY_IRQS
+	bool "Gazell zero-latency interrupts [EXPERIMENTAL]"
+	depends on ZERO_LATENCY_IRQS
+	select EXPERIMENTAL
+	help
+	  Enable zero-latency interrupt for Gazell's radio and timer IRQ so
+	  that they will not be blocked by interrupt locking.
+
+config GAZELL_HIGH_IRQ_PRIO
+	int "Gazell high IRQ priority"
+	range 0 0 if GAZELL_ZERO_LATENCY_IRQS
+	range 0 5 if ZERO_LATENCY_IRQS
+	range 0 6
+	default 0
+	help
+	  The interrupt priority for Gazell's radio and timer IRQ. This value
+	  shall be less than the Gazell's low IRQ priority value.
+
+config GAZELL_LOW_IRQ_PRIO_MIN
+	int
+	default 0 if (GAZELL_ZERO_LATENCY_IRQS)
+	default 1 if (GAZELL_HIGH_IRQ_PRIO = 0)
+	default 2 if (GAZELL_HIGH_IRQ_PRIO = 1)
+	default 3 if (GAZELL_HIGH_IRQ_PRIO = 2)
+	default 4 if (GAZELL_HIGH_IRQ_PRIO = 3)
+	default 5 if (GAZELL_HIGH_IRQ_PRIO = 4)
+	default 6 if (GAZELL_HIGH_IRQ_PRIO = 5)
+	default 7 if (GAZELL_HIGH_IRQ_PRIO = 6)
+
+config GAZELL_LOW_IRQ_PRIO
+	int "Gazell low IRQ priority"
+	range GAZELL_LOW_IRQ_PRIO_MIN 6 if ZERO_LATENCY_IRQS
+	range GAZELL_LOW_IRQ_PRIO_MIN 7
+	default GAZELL_LOW_IRQ_PRIO_MIN
+	help
+	  The interrupt priority for Gazell's SWI IRQ. This value shall
+	  be greater than the Gazell's high IRQ priority value.
+
+choice GAZELL_TIMER
+	default GAZELL_TIMER2
+	default GAZELL_TIMER10 if $(dt_nodelabel_has_compat,timer10,$(DT_COMPAT_NORDIC_NRF_TIMER))
+	prompt "Timer to use for the Gazell timer"
+
+config GAZELL_TIMER0
+	bool "TIMER0"
+	depends on $(dt_nodelabel_has_compat,timer0,$(DT_COMPAT_NORDIC_NRF_TIMER))
+
+config GAZELL_TIMER1
+	bool "TIMER1"
+	depends on $(dt_nodelabel_has_compat,timer1,$(DT_COMPAT_NORDIC_NRF_TIMER))
+
+config GAZELL_TIMER2
+	bool "TIMER2"
+	depends on $(dt_nodelabel_has_compat,timer2,$(DT_COMPAT_NORDIC_NRF_TIMER))
+
+config GAZELL_TIMER3
+	bool "TIMER3"
+	depends on $(dt_nodelabel_has_compat,timer3,$(DT_COMPAT_NORDIC_NRF_TIMER))
+
+config GAZELL_TIMER4
+	bool "TIMER4"
+	depends on $(dt_nodelabel_has_compat,timer4,$(DT_COMPAT_NORDIC_NRF_TIMER))
+
+config GAZELL_TIMER10
+	bool "TIMER10"
+	depends on $(dt_nodelabel_has_compat,timer10,$(DT_COMPAT_NORDIC_NRF_TIMER))
+	select NRFX_TIMER10
+
+config GAZELL_TIMER20
+	bool "TIMER20"
+	depends on $(dt_nodelabel_has_compat,timer20,$(DT_COMPAT_NORDIC_NRF_TIMER))
+	select NRFX_TIMER20
+
+config GAZELL_TIMER21
+	bool "TIMER21"
+	depends on $(dt_nodelabel_has_compat,timer21,$(DT_COMPAT_NORDIC_NRF_TIMER))
+
+config GAZELL_TIMER22
+	bool "TIMER22"
+	depends on $(dt_nodelabel_has_compat,timer22,$(DT_COMPAT_NORDIC_NRF_TIMER))
+
+config GAZELL_TIMER23
+	bool "TIMER23"
+	depends on $(dt_nodelabel_has_compat,timer23,$(DT_COMPAT_NORDIC_NRF_TIMER))
+
+config GAZELL_TIMER24
+	bool "TIMER24"
+	depends on $(dt_nodelabel_has_compat,timer24,$(DT_COMPAT_NORDIC_NRF_TIMER))
+
+endchoice
+
+choice GAZELL_SWI
+	default GAZELL_SWI0
+	prompt "Software interrupt to use for Gazell event report"
+
+config GAZELL_SWI0
+	bool "SWI0"
+	depends on HAS_HW_NRF_SWI0 || HAS_HW_NRF_EGU0 || SOC_SERIES_NRF54LX
+
+config GAZELL_SWI1
+	bool "SWI1"
+	depends on HAS_HW_NRF_SWI1 || HAS_HW_NRF_EGU1 || SOC_SERIES_NRF54LX
+
+config GAZELL_SWI2
+	bool "SWI2"
+	depends on HAS_HW_NRF_SWI2 || HAS_HW_NRF_EGU2 || SOC_SERIES_NRF54LX
+
+config GAZELL_SWI3
+	bool "SWI3"
+	depends on HAS_HW_NRF_SWI3 || HAS_HW_NRF_EGU3 || SOC_SERIES_NRF54LX
+
+config GAZELL_SWI4
+	bool "SWI4"
+	depends on HAS_HW_NRF_SWI4
+
+config GAZELL_SWI5
+	bool "SWI5"
+	depends on HAS_HW_NRF_SWI5
+
+endchoice
+
+endif # GAZELL
+
+module=GAZELL
+module-str=GAZELL
+source "${ZEPHYR_BASE}/subsys/logging/Kconfig.template.log_config"

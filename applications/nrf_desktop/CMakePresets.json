@@ -1,0 +1,22 @@
+{
+    "version": 2,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 20
+    },
+    "configurePresets": [
+        {
+            "name": "build_cy25kb_drycell_coex_poc4_delta_dfu_l10",
+            "displayName": "Build for nRF54L15 DK nRF54L10 Application",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build_cy25kb_drycell_coex_poc4_delta_dfu_l10",
+            "cacheVariables": {
+                "NCS_TOOLCHAIN_VERSION": "NONE",
+                "BOARD": "nrf54l15dk/nrf54l10/cpuapp",
+                "CONF_FILE": "prj_cy25kb_drycell_coex_poc4_delta_dfu.conf",
+                "DTC_OVERLAY_FILE": "cy25kb_drycell_poc4_gpioled_nrf54l10.overlay",
+                "FILE_SUFFIX": "cy25kb_drycell_coex_poc4_delta_dfu"
+            }
+        }
+    ]
+}

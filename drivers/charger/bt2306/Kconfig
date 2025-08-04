@@ -1,0 +1,21 @@
+#
+#  Copyright (c) 2019 Nordic Semiconductor ASA
+#
+#  SPDX-License-Identifier: Apache-2.0
+#
+
+menuconfig BT2306
+	bool "BT2306 Charger"
+	depends on DT_HAS_M3TEK_BT2306_ENABLED
+	select I2C
+	help
+	  Enable driver for BT2306 Charger.
+
+if BT2306
+
+
+module = BT2306
+module-str = BT2306
+source "${ZEPHYR_BASE}/subsys/logging/Kconfig.template.log_config"
+
+endif #BT2306

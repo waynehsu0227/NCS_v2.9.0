@@ -1,0 +1,19 @@
+#
+# Copyright (c) 2019 Nordic Semiconductor ASA
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+description:
+    Texas Instruments Battery Charger BT2306
+
+compatible: "m3tek,bt2306"
+
+include: [battery.yaml]
+
+properties:
+    int-gpios:
+      type: phandle-array
+      required: false
+
+   

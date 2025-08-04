@@ -1,0 +1,17 @@
+#
+# Copyright (c) 2019 Nordic Semiconductor
+#
+# SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
+#
+
+menuconfig LED_DRIVER
+	bool "LED Drivers"
+	help
+		Include LED drivers in config
+
+if LED_DRIVER
+
+rsource "lp50xx/Kconfig"
+rsource "led_matrix_scan/Kconfig"
+
+endif 

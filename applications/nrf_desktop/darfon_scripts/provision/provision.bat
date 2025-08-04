@@ -1,0 +1,1 @@
+west ncs-provision upload -s nrf54l15 -k .\configuration\nrf54l15dk_nrf54l15_cpuapp\images\mcuboot\mcuboot_private.pem

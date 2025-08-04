@@ -1,0 +1,43 @@
+#
+# Copyright (c) 2019 Nordic Semiconductor
+#
+# SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
+#
+
+menu "Battery charger manager configuration"
+
+
+
+config CHARGER
+	bool "battery charger manager"
+	help
+	  If selected, battery charging is enabled.
+
+
+if CHARGER
+
+config CHARGER_CONSTANT_CHARGE_CURRENT_UA
+	int "Fast charge(uA) current"
+	default 0
+config CHARGER_PRECHARGE_CURRENT_UA
+	int "Precharge current(uA) setting"
+	default 0
+config CHARGER_CHARGE_TERM_CURRENT_UA
+	int "Termination current(uA) setting"
+	default 0
+config CHARGER_CONSTANT_CHARGE_VOLTAGE_UV
+	int "Battery voltage(uV) setting"
+	default 0
+config CHARGER_INPUT_REGULATION_CURRENT_UA
+	int "Input current(uA) limit setting"
+	default 0
+config CHARGER_INPUT_REGULATION_VOLTAGE_UV
+	int "Input voltage(mV) threshold setting"
+	default 0
+
+	module = CHARGER_MANAGER
+	module-str = battery charger manager module
+	source "subsys/logging/Kconfig.template.log_config"
+endif
+
+endmenu

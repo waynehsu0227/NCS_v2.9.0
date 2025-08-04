@@ -1,0 +1,24 @@
+description: |
+    This is a representation of the led_matrix_scan led driver
+
+compatible: "matrix-scan-leds"
+
+include: base.yaml
+
+properties:
+  en-gpios:
+    type: phandle-array
+    description: enable gpio pin
+    required: true
+  col-gpios:
+    type: phandle-array
+    description: column gpio pins
+    required: true
+  row-gpios:
+    type: phandle-array
+    description: row gpio pins
+    required: true
+  scan-interval:
+    type: int
+    description: col-gpios scan interval
+    required: true

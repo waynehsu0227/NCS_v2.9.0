@@ -1,0 +1,23 @@
+#
+#  Copyright (c) 2019 Nordic Semiconductor ASA
+#
+#  SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
+#
+
+menuconfig MATRIX_SCAN_LED
+	bool "matrix_scan_led"
+#	depends on I2C
+	help
+	  Enable driver for MATRIX_SCAN_LED.
+
+if MATRIX_SCAN_LED
+
+config LED_DRIVER_MAX_LEDS
+	int "Maximum number LEDs"
+	default 6
+	range 1 6
+	help
+	  Maximum number of LED devices. The minimum (and
+	  default) number is 1.
+
+endif

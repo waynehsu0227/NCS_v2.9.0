@@ -1,0 +1,123 @@
+#ifndef _DPM_CONFIG_H_
+#define _DPM_CONFIG_H_
+
+#define DPM_FW_VER  	0x0002//mouse    0x0304//keyboard
+#define DPM_FW_VER_LOW_BYTE (DPM_FW_VER & 0x00FF)
+#define DPM_FW_VER_HIGH_BYTE (DPM_FW_VER >> 8)
+
+#ifndef CONFIG_DESKTOP_PERIPHERAL_TYPE_MOUSE
+    #define CAPABILITY_FW_UPDATE_MASK			(1<<0)
+    #define CAPABILITY_FN_KEY_MASK				(1<<1)		//Fn key in event supported.
+    #define CAPABILITY_CMD_0X0D_MASK			(0<<2)		//Set software mode
+    #define CAPABILITY_CMD_0X0E_MASK			(1<<3)		//Get battery status
+    #define CAPABILITY_CMD_0X0F_MASK			(1<<4)		//Device disconnect and reconnect
+    #define CAPABILITY_CMD_0X10_MASK			(1<<5)		//Get paired device host name
+#else
+    #define CAPABILITY_FW_UPDATE_MASK			(1<<0)
+    #define CAPABILITY_CMD_0X11_0x12_MASK		(1<<1)
+    #define CAPABILITY_CMD_0X0D_MASK			(0<<2)
+    #define CAPABILITY_CMD_0X0E_MASK			(1<<3)
+    #define CAPABILITY_CMD_0X0F_MASK			(1<<4)
+    #define CAPABILITY_CMD_0X10_MASK			(1<<5)
+    #define CAPABILITY_CMD_SMART_POINTER_MASK   (0<<6)
+#endif
+
+#ifndef CONFIG_DESKTOP_PERIPHERAL_TYPE_MOUSE
+    #define CAPABILITY_FLAG	(CAPABILITY_FW_UPDATE_MASK |\
+                        CAPABILITY_FN_KEY_MASK |\
+                        CAPABILITY_CMD_0X0D_MASK |\
+                        CAPABILITY_CMD_0X0E_MASK |\
+                        CAPABILITY_CMD_0X0F_MASK |\
+                        CAPABILITY_CMD_0X10_MASK)
+#else
+    #define CAPABILITY_FLAG	(CAPABILITY_FW_UPDATE_MASK |\
+                             CAPABILITY_CMD_0X0E_MASK |\
+                             CAPABILITY_CMD_0X0F_MASK |\
+                             CAPABILITY_CMD_0X10_MASK |\
+                             CAPABILITY_CMD_0X11_0x12_MASK |\
+                             CAPABILITY_CMD_SMART_POINTER_MASK)
+#endif
+/*
+#define RF_paired_device_ID 
+*/
+#define Vendor_ID 0x04     //Chicony : 0x01
+                            //Primax : 0x02
+                            //LiteOn : 0x03
+                            //Darfon : 0x04
+                            //Reserved : 0x00 and 0x05 to 0x07
+
+#define Vendor_ID 0x04      //Chicony : 0x01
+                            //Primax : 0x02
+                            //LiteOn : 0x03
+                            //Darfon : 0x04
+                            //Reserved : 0x00 and 0x05 to 0x07
+#define Color_code 0x01     //Default :                                 0x00
+                            //Dell Black (DPN: PH202) :                 0x01, 0x41 (A)
+                            //Titan Gray (DPN: COL000817) :             0x02
+                            //Gray (DPN: ) :                            0x03
+                            //White (DPN: ) :                           0x04
+                            //Solid Platinum (DPN: COL00843) :          0x05
+                            //Graphite (Magnetite) (DPN: COL001275 ) :  0x06
+                            //Misty blue (DPN: WIP) :                   0x07
+                            //Midnight Green (DPN:COL001375) :          0x08
+                            //Ash Pink (DPN: COL00092) :                0x09
+#define UnuseOrAlkaline     0x00
+#define ChargingIn          0x01
+#define Charging            0x02
+
+#define BAT_TYPE_OFFSET     3
+#define AA_X1               (0x00<<BAT_TYPE_OFFSET)
+#define AA_X2               (0x01<<BAT_TYPE_OFFSET)
+#define AA_Parallel         (0x02<<BAT_TYPE_OFFSET)
+#define AAA_X1              (0x04<<BAT_TYPE_OFFSET)
+#define AAA_X2              (0x05<<BAT_TYPE_OFFSET)
+#define AAA_Parallel        (0x06<<BAT_TYPE_OFFSET)
+#define AAA_Rechargeable    (0x0F<<BAT_TYPE_OFFSET)
+
+#if CONFIG_CY25KB_RECHARGEABLE
+    #define BAT_CHARGER_INFO    (Charging | AAA_Rechargeable)
+#elif CONFIG_CY25KB_DRYCELL
+    #define BAT_CHARGER_INFO    (UnuseOrAlkaline | AA_X2)
+#elif CONFIG_CY25MS_DRYCELL
+    #define BAT_CHARGER_INFO    (UnuseOrAlkaline | AA_X2)
+#endif
+
+#if CONFIG_CY25KB_RECHARGEABLE
+    #define CAP_MUL                 11  //11=x10 10=x5 01=x2 00=x1
+    #define BAT_CAPACITY            75  //75*10=750mAH
+#elif CONFIG_CY25KB_DRYCELL
+    #define CAP_MUL                 11  //11=x10 10=x5 01=x2 00=x1
+    #define BAT_CAPACITY            75  //75*10=750mAH
+#elif CONFIG_CY25MS_DRYCELL
+    #define CAP_MUL                 11  //11=x10 10=x5 01=x2 00=x1
+    #define BAT_CAPACITY            75  //75*10=750mAH
+#endif
+
+#define BAT_CAP_INFO            ((CAP_MUL<<14) | BAT_CAPACITY)
+#define BAT_CAP_INFO_LOW_BYTE   ((uint8_t)(BAT_CAP_INFO & 0x00FF))
+#define BAT_CAP_INFO_HIGH_BYTE  ((uint8_t)(BAT_CAP_INFO >> 8))
+
+#ifdef CONFIG_DESKTOP_PERIPHERAL_TYPE_MOUSE
+
+#define MIN_DPI_VAL     600
+#define MAX_DPI_VAL     4020
+#define DPI_STEP        30
+
+#endif
+
+char* get_host_name(uint8_t index);
+
+#if CONFIG_DESKTOP_PERIPHERAL_TYPE_MOUSE
+uint16_t get_current_dpi(void);
+void send_set_dpi_event(uint16_t dpi_value);
+void send_set_report_rate_event(uint16_t report_rate);
+uint16_t* get_report_rate_current(void);
+uint16_t* get_report_rate_support(void);
+#endif
+
+#ifdef CONFIG_DPM_COLLABS_KEY_SUPPORT
+void set_collabs_keys_status(uint8_t *buf);
+uint8_t* get_collabs_keys_status(void);
+#endif
+
+#endif

@@ -1,0 +1,108 @@
+/*
+ * Copyright (c) 2024 Nordic Semiconductor ASA
+ *
+ * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
+ */
+
+/* For nRF54L, watchdog status is disabled by default. Needs to be enabled in DTS overlay. */
+&wdt31 {
+	status = "okay";
+};
+
+/* Application does not use cpuflpr core. Assign whole RRAM to cpuapp. */
+&cpuapp_rram {
+	reg = < 0x0 DT_SIZE_K(1524) >;
+};
+
+
+
+/ {
+	/delete-node/ pwmleds;
+    /delete-node/ aliases;
+    /delete-node/ buttons;
+    /delete-node/ leds;
+
+
+    led_matrix_scan: led_matrix_scan_0 {
+        compatible = "matrix-scan-leds";
+        status = "okay";
+        en-gpios =   <&gpio0 1  GPIO_ACTIVE_HIGH>;
+
+        col-gpios = <&gpio1 9  GPIO_ACTIVE_HIGH>,
+                    <&gpio1 10 GPIO_ACTIVE_HIGH>;
+
+        row-gpios = <&gpio1 11 GPIO_ACTIVE_HIGH>,
+                    <&gpio1 12 GPIO_ACTIVE_HIGH>,
+                    <&gpio1 13 GPIO_ACTIVE_HIGH>;
+
+        scan-interval = <7>;
+    };
+};
+
+&uicr {
+    nfct-pins-as-gpios;
+};
+
+&uart20 {
+    status = "disabled";
+};
+
+&spi00 {
+    status = "disabled";
+};
+
+/ {
+	zephyr,user {
+		io-channels = <&adc 7>;
+	};
+};
+
+&adc {
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	channel@7 {
+		reg = <7>;
+		zephyr,gain = "ADC_GAIN_1_4";
+		zephyr,reference = "ADC_REF_INTERNAL";
+		zephyr,acquisition-time = <ADC_ACQ_TIME_DEFAULT>;
+		zephyr,input-positive = <NRF_SAADC_VDD>;
+		zephyr,resolution = <12>;
+	};
+};
+
+&hfxo {
+	load-capacitors = "internal";
+//	load-capacitance-femtofarad = <8000>;
+	load-capacitance-femtofarad = <12000>;
+//	load-capacitance-femtofarad = <14000>;
+//	load-capacitance-femtofarad = <15000>;
+//	load-capacitance-femtofarad = <16000>;
+
+};
+
+/delete-node/ &lfxo;
+
+/ {
+	cpuapp_sram@2002ef00 {
+		compatible = "zephyr,memory-region", "mmio-sram";
+		reg = <0x2002ef00 0x100>;
+		zephyr,memory-region = "RetainedMem";
+		status = "okay";
+
+		retainedmem0: retainedmem {
+			compatible = "zephyr,retained-ram";
+			status = "okay";
+		};
+	};
+
+	aliases {
+		retainedmemdevice0 = &retainedmem0;
+	};
+};
+
+&cpuapp_sram {
+	reg = <0x20000000 0x2ef00>;
+	ranges = <0x0 0x20000000 0x2ef00>;
+};
+

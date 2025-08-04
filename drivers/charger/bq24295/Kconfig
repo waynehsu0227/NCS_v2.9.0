@@ -1,0 +1,21 @@
+#
+#  Copyright (c) 2019 Nordic Semiconductor ASA
+#
+#  SPDX-License-Identifier: Apache-2.0
+#
+
+menuconfig BQ24295
+	bool "BQ24295 Charger"
+	depends on DT_HAS_TI_BQ24295_ENABLED
+	select I2C
+	help
+	  Enable driver for BQ24295 Charger.
+
+if BQ24295
+
+
+module = BQ24295
+module-str = BQ24295
+source "${ZEPHYR_BASE}/subsys/logging/Kconfig.template.log_config"
+
+endif #BQ24295

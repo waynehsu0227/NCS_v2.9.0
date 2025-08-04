@@ -1,0 +1,179 @@
+/*
+ * Copyright (c) 2024 Nordic Semiconductor ASA
+ *
+ * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
+ */
+
+/* For nRF54L, watchdog status is disabled by default. Needs to be enabled in DTS overlay. */
+&wdt31 {
+	status = "okay";
+};
+
+/* Application does not use cpuflpr core. Assign whole RRAM to cpuapp. */
+&cpuapp_rram {
+	reg = < 0x0 DT_SIZE_K(1524) >;
+};
+
+/ {
+	/delete-node/ pwmleds;
+    /delete-node/ aliases;
+    /delete-node/ buttons;
+    /delete-node/ leds;
+};
+
+&pinctrl {
+	i2c21_default_alt: i2c21_default_alt {
+		group1 {
+			psels = <NRF_PSEL(TWIM_SDA, 1, 12)>,
+				<NRF_PSEL(TWIM_SCL, 1, 11)>;
+		};
+	};
+
+	i2c21_sleep_alt: i2c21_sleep_alt {
+		group1 {
+			psels = <NRF_PSEL(TWIM_SDA, 1, 12)>,
+				<NRF_PSEL(TWIM_SCL, 1, 11)>;
+			low-power-enable;
+		};
+	};
+};
+
+#include <zephyr/dt-bindings/led/led.h>
+&i2c21 {
+	compatible = "nordic,nrf-twim";
+	status = "okay";
+	pinctrl-0 = <&i2c21_default_alt>;
+	pinctrl-1 = <&i2c21_sleep_alt>;
+	pinctrl-names = "default", "sleep";
+    clock-frequency = <I2C_BITRATE_FAST>;
+    lp50xx: lp50xx@14 {
+		compatible = "ti,lp50xx";
+		reg = <0x14>;
+        power-gpios = <&gpio1 13 (GPIO_ACTIVE_HIGH)>;
+		en-gpios = <&gpio1 10 (GPIO_ACTIVE_HIGH)>;
+        led_0 {
+            label = "S-W";
+            index = <0>;
+            color-mapping =
+                <LED_COLOR_ID_WHITE>;
+        };
+        led_1 {
+            label = "V-W";
+            index = <1>;
+            color-mapping =
+                <LED_COLOR_ID_WHITE>;
+        };
+        led_2 {
+            label = "V-R";
+            index = <2>;
+            color-mapping =
+                <LED_COLOR_ID_WHITE>;
+        };
+        led_3 {
+            label = "M-W";
+            index = <3>;
+            color-mapping =
+                <LED_COLOR_ID_WHITE>;
+        };
+        led_4 {
+            label = "M-R";
+            index = <4>;
+            color-mapping =
+                <LED_COLOR_ID_WHITE>;
+        };
+        led_5 {
+            label = "LED_CAPS";
+            index = <5>;
+            color-mapping =
+                <LED_COLOR_ID_WHITE>;
+        };
+        led_6 {
+            label = "LED_NUM";
+            index = <6>;
+            color-mapping =
+                <LED_COLOR_ID_WHITE>;
+        };
+        led_7 {
+            label = "LED_2.4G";
+            index = <7>;
+            color-mapping =
+                <LED_COLOR_ID_WHITE>;
+        };
+        led_8 {
+            label = "LED_BT1";
+            index = <8>;
+            color-mapping =
+                <LED_COLOR_ID_WHITE>;
+        };
+        led_9 {
+            label = "LED_BT2";
+            index = <9>;
+            color-mapping =
+                <LED_COLOR_ID_WHITE>;
+        };
+        led_10 {
+            label = "LED_PWR";
+            index = <10>;
+            color-mapping =
+                <LED_COLOR_ID_WHITE>;
+        };
+        led_11 {
+            label = "C-W";
+            index = <11>;
+            color-mapping =
+                <LED_COLOR_ID_WHITE>;
+        };
+	};
+
+    bq25619: bq2561x@6A {
+        compatible = "ti,bq2561x";
+        label = "BQ2561X";
+        reg = <0x6A>;
+        int-gpios = <&gpio1 9 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+/*        ce-gpios = <&gpio0 9 GPIO_ACTIVE_LOW>;*/
+    };
+};
+
+&uicr {
+    nfct-pins-as-gpios;
+};
+
+&uart20 {
+    status = "disabled";
+};
+
+&spi00 {
+    status = "disabled";
+};
+
+/ {
+	zephyr,user {
+		io-channels = <&adc 7>;
+	};
+};
+
+&adc {
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	channel@7 {
+		reg = <7>;
+		zephyr,gain = "ADC_GAIN_1_3";
+		zephyr,reference = "ADC_REF_INTERNAL";
+		zephyr,acquisition-time = <ADC_ACQ_TIME_DEFAULT>;
+		zephyr,input-positive = <NRF_SAADC_AIN7>;
+		zephyr,resolution = <12>;
+	};
+};
+
+&hfxo {
+	load-capacitors = "internal";
+//	load-capacitance-femtofarad = <8000>;
+	load-capacitance-femtofarad = <12000>;
+//	load-capacitance-femtofarad = <14000>;
+//	load-capacitance-femtofarad = <15000>;
+//	load-capacitance-femtofarad = <16000>;
+
+};
+
+/delete-node/ &lfxo;

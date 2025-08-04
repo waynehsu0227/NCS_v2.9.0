@@ -1,0 +1,42 @@
+#
+# Copyright (c) 2022 Nordic Semiconductor ASA
+#
+# SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
+#
+
+menu "cy25 configuration"
+
+config CY25
+	bool "cy25 poc"
+
+
+if CY25
+
+config CY25KB_RECHARGEABLE
+    bool "cy25kb rechargeable"
+	default n
+
+config CY25KB_DRYCELL
+    bool "cy25kb drycell"
+	default n
+
+config CY25MS_DRYCELL
+    bool "cy25ms drycell"
+	default n
+
+config CY25_BLE_DFU_SPEED_UP
+	 bool "cy25 BLE DFU speed up"
+	 default n
+
+config CY25_BAT_LOW_PERCEN
+	int "SOC percentage"
+	range 0 100
+	default 3
+
+config EARY_BATTERY_MEAS
+	bool "Force reading BAT ADC before DPM ready"	
+	default n
+
+endif
+
+endmenu

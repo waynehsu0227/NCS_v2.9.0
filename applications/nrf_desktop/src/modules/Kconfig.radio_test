@@ -1,0 +1,43 @@
+#
+# Copyright (c) 2022 Nordic Semiconductor ASA
+#
+# SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
+#
+
+config RADIO_TEST_ENABLE
+
+	bool "RADIO_TEST ENABLE"
+	default n
+
+if RADIO_TEST_ENABLE
+
+config RADIO_TEST_POWER_CONTROL_AUTOMATIC
+	bool "Automatic power control"
+	depends on FEM
+	default y
+	help
+	  Set SoC output power and front-end module gain to achieve Tx output power requested
+	  by user. If the exact value cannot be achieved, power is set to closest value which does
+	  not exceed the limits. If this option is disabled, user has to set SoC output power and
+	  fem gain with separate commands.
+
+config RADIO_TEST_CHANNEL_LOW
+	int "Default radio test low channel"
+	range 0 80
+	default 2
+
+config RADIO_TEST_CHANNEL_MIDDLE
+	int "Default radio test middle channel"
+	range 0 80
+	default 40
+
+config RADIO_TEST_CHANNEL_HIGH
+	int "Default radio test high channel"
+	range 0 80
+	default 80
+
+module = RADIO_TEST
+module-str = radio_test
+source "subsys/logging/Kconfig.template.log_config"
+
+endif

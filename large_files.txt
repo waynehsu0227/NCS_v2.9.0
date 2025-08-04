@@ -1,0 +1,2 @@
+applications/nrf_desktop.7z
+applications/nrf_desktop_0417.zip

@@ -1,0 +1,45 @@
+/*
+ * Copyright (c) 2024 Nordic Semiconductor ASA
+ *
+ * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
+ */
+
+/* For nRF54L, watchdog status is disabled by default. Needs to be enabled in DTS overlay. */
+
+/ {
+	/delete-node/ pwmleds;
+    /delete-node/ aliases;
+    /delete-node/ buttons;
+    /delete-node/ leds;
+
+};
+
+&uicr {
+    nfct-pins-as-gpios;
+};
+
+&uart20 {
+    status = "disabled";
+};
+
+&spi00 {
+    status = "disabled";
+};
+
+/ {
+	zephyr,user {
+		io-channels = <&adc 7>;
+	};
+};
+
+&hfxo {
+	load-capacitors = "internal";
+//	load-capacitance-femtofarad = <8000>;
+	load-capacitance-femtofarad = <12000>;
+//	load-capacitance-femtofarad = <14000>;
+//	load-capacitance-femtofarad = <15000>;
+//	load-capacitance-femtofarad = <16000>;
+
+};
+
+/delete-node/ &lfxo;
